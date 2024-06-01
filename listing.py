@@ -1,12 +1,12 @@
 import sqlite3
 from sqlite3 import Error
 
+debug = False
+
 global db
 db = "C:/Users/ralph/Documents/Antsy Chickadee/antsy chickadee 2405.sqlite3"
 connection = sqlite3.connect(db)
 cursor = connection.cursor()
-
-debug = True
 
 class Listing:
     def __init__(self, id_number=-1):
