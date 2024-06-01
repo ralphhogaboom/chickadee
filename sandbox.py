@@ -1,16 +1,24 @@
+import re
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from listing import Listing
 
-scanner_name = "burkhamer"
-vendor_name = "Burkhamer Property Services"
+scanner_name = "cathysrentals"
+vendor_name = "Cathy Hinds Home Sweet Home Propery Management"
+path = "https://cathyhindspm.appfolio.com/listings?1415168891973#"
 
-path = "http://ralph.hogaboom.org/chickadee/cathysrentals/cathysrentals.htm"
-relative_base_url = path.rsplit('/',1)[0]
-page = requests.get(path)
-soup = BeautifulSoup(page.content, "html.parser")
-results = soup.find(id="result_container")
+def assumeBedrooms(bedrooms):
+    return 1 if int(bedrooms) == 0 else int(bedrooms)
+
+def numbersOnly(text):
+    text = text.replace('$','')
+    text = text.replace(',','')
+    text = text.replace('RENT','')
+    text = text.replace('beds', '')
+    text = text.replace('bed', '')
+    text = text.replace('bath', '')
+    return text
 
 def cleanCityState(segments):
     if not ',' in segments[-3]:
@@ -19,22 +27,4 @@ def cleanCityState(segments):
         segments[-2] = segments[-2].replace('.', '')
     return segments
 
-# def numbersOnly(text):
-#     pattern = r'\d+'
-#     text.replace('$','')
-#     match = re.search(pattern, text)
-#     if match:
-#         return match.group()
-#     else:
-#         return 0
-
-# ras == rental attributes
-ras = results.find_all("div", class_="listing-item result js-listing-item")
-for ra in ras:
-    strLocCity = ra.find("span", class_="u-pad-rm js-listing-address")
-    strLocCity = strLocCity.text
-
-    segments = strLocCity.split(" ")
-    segments = cleanCityState(segments)
-    strLocCity = segments[-3] + " " + segments[-2]
-    print(strLocCity)
+relative_base_url = path.rsplit('/',1)[0]

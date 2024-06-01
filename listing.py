@@ -1,10 +1,11 @@
+import pathlib
 import sqlite3
 from sqlite3 import Error
 
 debug = False
 
 global db
-db = "C:/Users/ralph/Documents/Antsy Chickadee/antsy chickadee 2405.sqlite3"
+db = pathlib.Path(__file__).parent.resolve() / "db/db.sqlite3"
 connection = sqlite3.connect(db)
 cursor = connection.cursor()
 
