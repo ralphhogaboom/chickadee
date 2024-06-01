@@ -7,19 +7,25 @@ from listing import Listing
 
 scanner_name = "spivey"
 vendor_name = "Spivey Realty Group"
-
-# path = "https://ralph.hogaboom.org/zillow/SpiveyRentals.htm"
 path = "https://rentalsbyspivey.managebuilding.com/Resident/public/rentals?hidenav=true&bedrooms=0&bathrooms=0&location=98520"
-
-relative_base_url = path.rsplit('/',1)[0]
-page = requests.get(path)
-soup = BeautifulSoup(page.content, "html.parser")
-results = soup.find(id="rentals-container")
 
 def assumeBedrooms(bedrooms):
     return 1 if int(bedrooms) == 0 else int(bedrooms)
 
-# ras == rental attributes
+def numbersOnly(text):
+    text = text.replace('$','')
+    text = text.replace(',','')
+    text = text.replace('RENT','')
+    text = text.replace('beds', '')
+    text = text.replace('bed', '')
+    text = text.replace('bath', '')
+    return text
+
+relative_base_url = path.rsplit('/',1)[0]
+page = requests.get(path)
+soup = BeautifulSoup(page.content, "html.parser")
+
+results = soup.find(id="rentals-container")
 ras = results.find_all("a", class_="featured-listing")
 for ra in ras:
     # 1 id

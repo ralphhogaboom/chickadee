@@ -6,6 +6,13 @@ import sys
 sys.path.append("C:\\Users\\ralph\\Documents\\Antsy Chickadee")
 from listing import Listing
 
+scanner_name = "ssrealty"
+vendor_name = "South Shore Realty"
+path = "https://ralph.hogaboom.org/chickadee/ssrealty.htm"
+
+def assumeBedrooms(bedrooms):
+    return 1 if int(bedrooms) == 0 else int(bedrooms)
+
 def numbersOnly(text):
     text = text.replace('$','')
     text = text.replace(',','')
@@ -14,7 +21,7 @@ def numbersOnly(text):
     text = text.replace('bed', '')
     text = text.replace('bath', '')
     return text
-    
+
 def cleanCityState(segments):
     if not ',' in segments[-3]:
         segments[-3] = segments[-3] + ","
@@ -22,17 +29,11 @@ def cleanCityState(segments):
         segments[-2] = segments[-2].replace('.', '')
     return segments
 
-scanner_name = "ssrealty"
-vendor_name = "South Shore Realty"
-
-path = "https://ralph.hogaboom.org/chickadee/ssrealty.htm"
-
 relative_base_url = path.rsplit('/',1)[0]
 page = requests.get(path)
 soup = BeautifulSoup(page.content, "html.parser")
 
 results = soup.find(id="1903639482")
-# ras == rental attributes
 ras = results.find_all("div", class_="listing-item")
 for ra in ras:
     # 1 id

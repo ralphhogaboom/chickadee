@@ -8,24 +8,20 @@ from listing import Listing
 
 scanner_name = "cathysrentals"
 vendor_name = "Cathy Hinds Home Sweet Home Propery Management"
-
-# path = "http://ralph.hogaboom.org/chickadee/cathysrentals/cathysrentals.htm"
 path = "https://cathyhindspm.appfolio.com/listings?1415168891973#"
 
-relative_base_url = path.rsplit('/',1)[0]
-page = requests.get(path)
-soup = BeautifulSoup(page.content, "html.parser")
-results = soup.find(id="result_container")
+def assumeBedrooms(bedrooms):
+    return 1 if int(bedrooms) == 0 else int(bedrooms)
 
 def numbersOnly(text):
-    pattern = r'\d+'
-    text.replace('$','')
-    match = re.search(pattern, text)
-    if match:
-        return match.group()
-    else:
-        return 0
-    
+    text = text.replace('$','')
+    text = text.replace(',','')
+    text = text.replace('RENT','')
+    text = text.replace('beds', '')
+    text = text.replace('bed', '')
+    text = text.replace('bath', '')
+    return text
+
 def cleanCityState(segments):
     if not ',' in segments[-3]:
         segments[-3] = segments[-3] + ","
@@ -33,7 +29,11 @@ def cleanCityState(segments):
         segments[-2] = segments[-2].replace('.', '')
     return segments
 
-# ras == rental attributes
+relative_base_url = path.rsplit('/',1)[0]
+page = requests.get(path)
+soup = BeautifulSoup(page.content, "html.parser")
+
+results = soup.find(id="result_container")
 ras = results.find_all("div", class_="listing-item result js-listing-item")
 for ra in ras:
     # 1 id
@@ -55,19 +55,20 @@ for ra in ras:
     strLocDesc = ra.find("span", class_="u-pad-rm js-listing-address")
     strLocDesc = strLocDesc.text
     # 7 Price
-    strPrice = ra.find("div", class_="detail-box__item")
-    strPrice = strPrice.find("dd", class_="detail-box__value")
-    # 8 bedrooms & 9 bathrooms
+    #strPrice = ra.find("div", class_="detail-box__item")
+    #strPrice = strPrice.find("dd", class_="detail-box__value")
+    #strPrice = numbersOnly(strPrice)
+    # 7 Price, 8 bedrooms, & 9 bathrooms
     details = ra.find_all("div", class_="detail-box__item")
-    strBedrooms = ""
-    strBathrooms = ""
-    strPrice = ""
-    strAvailable = ""
+    strAvailable = "0"
+    strBedrooms = "0"
+    strBathrooms = "0"
+    strPrice = "0"
     for section in details:
         text = section.find("dt")
         if "RENT" in text.text:
             values = section.find("dd")
-            strPrice = values.text
+            strPrice = numbersOnly(values.text)
         if "bath" in text.text.lower():
             values = section.find("dd")
             this = (values.text).split("/")
