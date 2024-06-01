@@ -13,6 +13,7 @@ class Listing:
         self.id_number = id
         self.connection = sqlite3.connect(db)
         self.cursor = self.connection.cursor()
+
     def new_listing(self, FirstIngestedOn, LastIngestedOn, LocZip, LocCity, LocDesc, price, bedrooms, bathrooms, description, url, type, images, FeaturedImage, PetFriendly, furnished, CurrentlyAvailable, vendor, scanner, SquareFeet, deposit, lease):
         values = FirstIngestedOn, LastIngestedOn, LocZip, LocCity, LocDesc, price, bedrooms, bathrooms, description, url, type, images, FeaturedImage, PetFriendly, furnished, CurrentlyAvailable, vendor, scanner, SquareFeet, deposit, lease
         cursor.execute("""
@@ -46,6 +47,8 @@ class Listing:
 
     def find_listing_by_search(self, locDesc, locCity, locZip):
         if debug: connection.set_trace_callback(print)
+        if locCity == "Shores, WA":
+            locCity == "Ocean Shores, WA"
         search = locDesc, locCity, locZip
         print(search)
         cursor.execute("""

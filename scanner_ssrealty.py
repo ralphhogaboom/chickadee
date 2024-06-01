@@ -50,6 +50,8 @@ for ra in ras:
     strAddress = strAddress.text
     segments = strAddress.split(" ")
     segments = cleanCityState(segments)
+    if segments[-3] == "Shores":
+        segments[-3] == "Ocean Shores"
     strLocCity = segments[-3] + " " + segments[-2]
     # 6 LocDesc
     strLocDesc = ra.find("div", class_="tagline")

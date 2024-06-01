@@ -8,26 +8,34 @@ from listing import Listing
 
 scanner_name = "burkhamer"
 vendor_name = "Burkhamer Property Services"
-
-# path = "http://ralph.hogaboom.org/chickadee/burkhamer/index.html"
 path = "https://www.burkhamerpropertyservices.com/available-rental-home-listings"
+path = "https://ralph.hogaboom.org/chickadee/available-rental-home-listings.htm"
+
+def assumeBedrooms(bedrooms):
+    return 1 if int(bedrooms) == 0 else int(bedrooms)
+
+def numbersOnly(text):
+    text = text.replace('$','')
+    text = text.replace(',','')
+    text = text.replace('RENT','')
+    text = text.replace('beds', '')
+    text = text.replace('bed', '')
+    text = text.replace('bath', '')
+    return text
+
+def cleanCityState(segments):
+    if not ',' in segments[-3]:
+        segments[-3] = segments[-3] + ","
+    if '.' in segments[-2]:
+        segments[-2] = segments[-2].replace('.', '')
+    return segments
 
 relative_base_url = path.rsplit('/',1)[0]
 page = requests.get(path)
 soup = BeautifulSoup(page.content, "html.parser")
-results = soup.find(id="rplFeatured")
 
-def numbersOnly(text):
-    pattern = r'\d+'
-    text.replace('$','')
-    match = re.search(pattern, text)
-    if match:
-        return match.group()
-    else:
-        return 0
-
-# ras == rental attributes
-ras = results.find_all("div", class_="rplFeaturedDivContent")
+results = soup.find(id="rplSummaryListings")
+ras = results.find_all("div", class_="rplSummary")
 for ra in ras:
     # 1 id
     # 2 FirstIngestedOn
@@ -43,6 +51,8 @@ for ra in ras:
         segments[-3] = segments[-3] + ","
     if '.' in segments[-2]:
         segments[-2] = segments[-2].replace('.', '')
+    if segments[-3] == "Shores":
+        segments[-3] == "Ocean Shores"
     strLocCity = segments[-3] + " " + segments[-2]
     # 6 LocDesc
     LocDesc = ra.find("div", class_="rplTagl")
@@ -59,14 +69,13 @@ for ra in ras:
     # 10 description
     strDescription = (ra.find("div", class_="rplTagl")).text
     # 11 url
-    strUrl = "none"
+    strUrl = (ra.find("a", class_="slider-link")).get("href")
     # 12 type
     strType = "home"
     # 13 images
     strImages = 1
     # 14 FeaturedImage
-    strFeaturedImage = ra.find("div", class_="rplPhoto")
-    strFeaturedImage = (strFeaturedImage.find("img")).get("src")
+    strImage = (ra.find("div", class_="slider-image")).get("data-background-image")
     # 15 PetFriendly
     strPetFriendly = "0"
     # 16 furnished

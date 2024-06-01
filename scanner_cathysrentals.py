@@ -20,6 +20,8 @@ def numbersOnly(text):
     text = text.replace('beds', '')
     text = text.replace('bed', '')
     text = text.replace('bath', '')
+    text = text.replace('bd', '')
+    text = text.replace('ba', '')
     return text
 
 def cleanCityState(segments):
@@ -27,6 +29,9 @@ def cleanCityState(segments):
         segments[-3] = segments[-3] + ","
     if '.' in segments[-2]:
         segments[-2] = segments[-2].replace('.', '')
+    for segment in segments:
+        segment = segment.rstrip()
+        segment = segment.lstrip()
     return segments
 
 relative_base_url = path.rsplit('/',1)[0]
@@ -48,9 +53,13 @@ for ra in ras:
     # 5 LocCity
     strLocCity = ra.find("span", class_="u-pad-rm js-listing-address")
     strLocCity = strLocCity.text
-    segments = strLocCity.split(" ")
+    segments = strLocCity.split(",")
     segments = cleanCityState(segments)
-    strLocCity = segments[-3] + " " + segments[-2]
+    strLocCity = segments[-2]
+    strLocCity = strLocCity.rstrip()
+    strLocCity = strLocCity.lstrip()
+    strLocCity = strLocCity + ", WA"
+    print(strLocCity)
     # 6 LocDesc
     strLocDesc = ra.find("span", class_="u-pad-rm js-listing-address")
     strLocDesc = strLocDesc.text
@@ -72,11 +81,11 @@ for ra in ras:
         if "bath" in text.text.lower():
             values = section.find("dd")
             this = (values.text).split("/")
-            strBathrooms = this[1]
+            strBathrooms = numbersOnly(this[1])
         if "bed" in text.text.lower():
             values = section.find("dd")
             this = (values.text).split("/")
-            strBedrooms = this[0]
+            strBedrooms = numbersOnly(this[0])
         if "available" in text.text.lower():
             values = section.find("dd")
             strAvailable = values.text
@@ -113,31 +122,30 @@ for ra in ras:
     # 22 lease
     strLease = "0"
 
-    """ ## Begin Debug code
-    #print(" 1 id: " + strid)
-    #print(" 2 FirstIngestedOn: " + strFirstIngestedOn)
-    print(" 3 LastIngestedOn: " + strLastIngestedOn)
-    print(" 4 LocCity: " + strLocCity)
-    print(" 5 LocZip: " + strLocZip)
-    print(" 6 LocDesc: " + strLocDesc)
-    print(" 7 price: " + strPrice)
-    print(" 8 bedrooms: " + strBedrooms)
-    print(" 9 bathrooms: " + strBathrooms)
-    print("10 description: " + strDescription)
-    print("11 url: " + strUrl)
-    print("12 type: " + strType)
-    print("13 images: " + str(strImages))
-    print("14 FeaturedImage: " + strFeaturedImage)
-    print("15 PetFriendly: " + strPetFriendly)
-    print("16 furnished: " + strFurnished)
-    print("17 CurrentlyAvailable: " + strCurrentlyAvailable)
-    print("18 vendor: " + strVendor)
-    print("19 scanner: " + strScanner)
-    print("20 SquareFeet: " + strSquareFeet)
-    print("21 deposit: " + strDeposit)
-    print("22 lease: " + strLease)
-    print("-----------------------------")
-    """
+    # # ## Begin Debug code
+    # #print(" 1 id: " + strid)
+    # #print(" 2 FirstIngestedOn: " + strFirstIngestedOn)
+    # print(" 3 LastIngestedOn: " + strLastIngestedOn)
+    # print(" 4 LocCity: " + strLocCity)
+    # print(" 5 LocZip: " + strLocZip)
+    # print(" 6 LocDesc: " + strLocDesc)
+    # print(" 7 price: " + strPrice)
+    # print(" 8 bedrooms: " + strBedrooms)
+    # print(" 9 bathrooms: " + strBathrooms)
+    # print("10 description: " + strDescription)
+    # print("11 url: " + strUrl)
+    # print("12 type: " + strType)
+    # print("13 images: " + str(strImages))
+    # print("14 FeaturedImage: " + strFeaturedImage)
+    # print("15 PetFriendly: " + strPetFriendly)
+    # print("16 furnished: " + strFurnished)
+    # print("17 CurrentlyAvailable: " + strCurrentlyAvailable)
+    # print("18 vendor: " + strVendor)
+    # print("19 scanner: " + strScanner)
+    # print("20 SquareFeet: " + strSquareFeet)
+    # print("21 deposit: " + strDeposit)
+    # print("22 lease: " + strLease)
+    # print("-----------------------------")
 
     # check if exists in db; 
     loc1 = Listing()
@@ -166,4 +174,3 @@ for ra in ras:
         loc1.new_listing(strLastIngestedOn, strLastIngestedOn, strLocZip, strLocCity, strLocDesc, strPrice, strBedrooms, strBathrooms, strDescription, strUrl, strType, 0, strFeaturedImage, 0, 0, "yes", strVendor, strScanner, strSquareFeet, 0, 0)
 
     print("----------------------------")
- 
