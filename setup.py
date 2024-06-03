@@ -12,8 +12,6 @@ else:
     # create database
     connection = sqlite3.connect(db)
     cursor = connection.cursor()
-    connection = sqlite3.connect(db)
-    cursor = connection.cursor()
 
     if os.path.exists("db/create.sql"):
         with open("db/create.sql", "r") as sql_file:
