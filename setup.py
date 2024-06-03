@@ -16,8 +16,8 @@ else:
     connection = sqlite3.connect(db)
     cursor = connection.cursor()
 
-    if os.path.exists("db/newdb.sql"):
-        with open("db/newdb.sql", "r") as sql_file:
+    if os.path.exists("db/db.sql"):
+        with open("db/db.sql", "r") as sql_file:
             sql = sql_file.read()
         cursor.execute(sql)
         connection.commit()
