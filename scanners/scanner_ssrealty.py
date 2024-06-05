@@ -3,12 +3,16 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import sys
-sys.path.append("C:\\Users\\ralph\\Documents\\Antsy Chickadee")
 from listing import Listing
+from splinter import Browser
+import time
+import random
+from random import randint
 
 scanner_name = "ssrealty"
 vendor_name = "South Shore Realty"
-path = "https://ralph.hogaboom.org/chickadee/ssrealty.htm"
+path = "https://www.graysharborrentals.com/home_rentals"
+headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 def assumeBedrooms(bedrooms):
     return 1 if int(bedrooms) == 0 else int(bedrooms)
@@ -30,8 +34,14 @@ def cleanCityState(segments):
     return segments
 
 relative_base_url = path.rsplit('/',1)[0]
-page = requests.get(path)
-soup = BeautifulSoup(page.content, "html.parser")
+
+browser = Browser('firefox')
+browser.visit(path)
+
+time.sleep(randint(1,4))
+
+page = browser.html
+soup = BeautifulSoup(page, "html.parser")
 
 results = soup.find(id="1903639482")
 ras = results.find_all("div", class_="listing-item")
@@ -146,4 +156,5 @@ for ra in ras:
         loc1.new_listing(strLastIngestedOn, strLastIngestedOn, strLocZip, strLocCity, strLocDesc, strPrice, strBedrooms, strBathrooms, strDescription, strUrl, strType, 0, strFeaturedImage, 0, 0, "yes", strVendor, strScanner, strSquareFeet, 0, 0)
 
     print("----------------------------")
- 
+
+browser.quit()

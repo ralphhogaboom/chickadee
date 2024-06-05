@@ -4,6 +4,7 @@
 import os
 import sqlite3
 from sqlite3 import Error
+from listing import Listing
 
 db = "db/db.sqlite3"
 if os.path.exists(db):
@@ -12,9 +13,11 @@ else:
     # create database
     connection = sqlite3.connect(db)
     cursor = connection.cursor()
+    connection = sqlite3.connect(db)
+    cursor = connection.cursor()
 
-    if os.path.exists("db/create.sql"):
-        with open("db/create.sql", "r") as sql_file:
+    if os.path.exists("db/newdb.sql"):
+        with open("db/newdb.sql", "r") as sql_file:
             sql = sql_file.read()
         cursor.execute(sql)
         connection.commit()

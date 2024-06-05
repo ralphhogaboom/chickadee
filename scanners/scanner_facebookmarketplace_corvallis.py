@@ -5,9 +5,10 @@ from bs4 import BeautifulSoup
 from listing import Listing
 import time
 import random
-from random import randint
-import sys
+
 from splinter import Browser
+import pandas as pd
+import matplotlib.pyplot as plt
 import time
 
 def numbersOnly(text):
@@ -25,24 +26,25 @@ def numbersOnly(text):
     return text
 
 def taketime():
-    for remaining in range((randint(2,11)), 0 -1):
-        sys.stdout.write("\r")
-        sys.stdout.write("{:2d} seconds ...".format(remaining))
-        sys.stdout.flush()
-        time.sleep(1)
+    time.sleep(round(random.uniform(1.2,9.8),2))
 
 parentBrowser = Browser('firefox')
 base_url = "https://www.facebook.com/marketplace/114113988602319/propertyrentals/?"
-scanner_name = "facebook"
+base_url = "https://www.facebook.com/marketplace/104028649634847/propertyrentals/?"
+
+scanner_name = "facebook_corvallis"
 vendor_name = "Facebook Marketplace"
 
+lat = 47.1187
 lat = (round(random.uniform(46.834,47.0541),4))
+long = -123.7706
 long = (round(random.uniform(-124.1017,-123.6774),4))
-radius = (round(random.uniform(15,50),0))
+radius = (round(random.uniform(15,35),0))
 exact = "false"
 
 # url = f"{base_url|}minBathrooms={minBathrooms}&minBedrooms={minBedrooms}&propertyType={propertyType}&exact={exact}"
 starturl = f"{base_url}latitude={lat}&longitude={long}&radius={radius}&exact={exact}"
+starturl = f"{base_url}"
 
 parentBrowser.visit(starturl)
 
@@ -68,11 +70,9 @@ urls = tuple(strUrl.split(','))
 
 for url in urls:
     listing_url = "https://www.facebook.com" + url
-
     taketime()
     browser = Browser('firefox')
     browser.visit(listing_url)
-    time.sleep(2)
     listing_page = browser.html
     listing_soup = BeautifulSoup(listing_page, "html.parser")
 

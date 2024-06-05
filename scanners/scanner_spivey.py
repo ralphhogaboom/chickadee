@@ -2,7 +2,6 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import sys
-sys.path.append("C:\\Users\\ralph\\Documents\\Antsy Chickadee")
 from listing import Listing
 
 scanner_name = "spivey"
