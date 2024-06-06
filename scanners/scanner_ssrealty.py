@@ -3,16 +3,25 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import sys
-from listing import Listing
 from splinter import Browser
 import time
 import random
 from random import randint
+import os
+import sys
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, libdir)
+from class_listing import Listing
 
 scanner_name = "ssrealty"
 vendor_name = "South Shore Realty"
 path = "https://www.graysharborrentals.com/home_rentals"
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
+print("------------------------")
+print(scanner_name)
+print(vendor_name)
+print("------------------------")
 
 def assumeBedrooms(bedrooms):
     return 1 if int(bedrooms) == 0 else int(bedrooms)

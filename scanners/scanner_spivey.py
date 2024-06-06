@@ -2,11 +2,20 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import sys
-from listing import Listing
+import os
+import sys
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, libdir)
+from class_listing import Listing
 
 scanner_name = "spivey"
 vendor_name = "Spivey Realty Group"
 path = "https://rentalsbyspivey.managebuilding.com/Resident/public/rentals?hidenav=true&bedrooms=0&bathrooms=0&location=98520"
+
+print("------------------------")
+print(scanner_name)
+print(vendor_name)
+print("------------------------")
 
 def assumeBedrooms(bedrooms):
     return 1 if int(bedrooms) == 0 else int(bedrooms)

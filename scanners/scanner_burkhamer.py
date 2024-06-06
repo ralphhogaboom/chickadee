@@ -1,14 +1,21 @@
 import re
 import requests
-import sys
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
-from listing import Listing
 from splinter import Browser
+import sys
+import os
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, libdir)
+from class_listing import Listing
 
 scanner_name = "burkhamer"
 vendor_name = "Burkhamer Property Services"
+print("------------------------")
+print(scanner_name)
+print(vendor_name)
+print("------------------------")
 path = "https://www.burkhamerpropertyservices.com/available-rental-home-listings"
 
 def assumeBedrooms(bedrooms):

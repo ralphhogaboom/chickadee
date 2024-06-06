@@ -2,13 +2,16 @@ import re
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-from listing import Listing
 import time
 import random
 from random import randint
 import sys
 from splinter import Browser
-import time
+import os
+import sys
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, libdir)
+from class_listing import Listing
 
 def numbersOnly(text):
     text = text.replace('$','')
@@ -35,6 +38,11 @@ parentBrowser = Browser('firefox')
 base_url = "https://www.facebook.com/marketplace/114113988602319/propertyrentals/?"
 scanner_name = "facebook"
 vendor_name = "Facebook Marketplace"
+
+print("------------------------")
+print(scanner_name)
+print(vendor_name)
+print("------------------------")
 
 lat = (round(random.uniform(46.834,47.0541),4))
 long = (round(random.uniform(-124.1017,-123.6774),4))
