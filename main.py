@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def main():
-    logging.basicConfig(filename="chickadee.log", level=logging.DEBUG)
+    logging.basicConfig(filename="chickadee.log", level=logging.INFO)
     logger.info("App started: " + str(datetime.now()))
     MIN_PYTHON = (3,)
     if sys.version_info < MIN_PYTHON:
