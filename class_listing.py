@@ -1,6 +1,9 @@
 import pathlib
 import sqlite3
 from sqlite3 import Error
+import logging
+
+logger = logging.getLogger(__name__)
 
 debug = False
 
@@ -11,6 +14,7 @@ cursor = connection.cursor()
 
 class Listing:
     def __init__(self, id_number=-1):
+        logging.basicConfig(filename='chickadee.log', level=logging.INFO)
         self.id_number = id
         self.connection = sqlite3.connect(db)
         self.cursor = self.connection.cursor()
@@ -44,7 +48,7 @@ class Listing:
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, values)
         connection.commit()
-        print("New listing successfully added.")
+        logger.info("New listing successfully added.")
 
     def find_listing_by_url(self, url):
         if debug: connection.set_trace_callback(print)
@@ -64,7 +68,7 @@ class Listing:
         if locCity == "Shores, WA":
             locCity == "Ocean Shores, WA"
         search = locDesc, locCity, locZip
-        print(search)
+        logger.info(search)
         cursor.execute("""
         SELECT id FROM rentals 
         WHERE
@@ -97,7 +101,7 @@ class Listing:
         UPDATE rentals SET price = ? WHERE id = ?
         """, values)
         connection.commit()
-        print("Price udpated successfully.")
+        logger.info("Price udpated successfully.")
 
     def set_square_feet(self, squareFeet):
         values = squareFeet, self.id_number
@@ -106,7 +110,7 @@ class Listing:
         UPDATE rentals SET SquareFeet = ? WHERE id = ?
         """, values)
         connection.commit()
-        print("Square feet udpated successfully.")
+        logger.info("Square feet udpated successfully.")
 
     def set_currently_available(self):
         values = "yes", self.id_number
@@ -114,7 +118,7 @@ class Listing:
         UPDATE rentals SET CurrentlyAvailable = ? WHERE id = ?
         """, values)
         connection.commit()
-        print("Availability status has been updated. ")
+        logger.info("Availability status has been updated. ")
 
     def set_last_ingested(self, lastIngestion):
         if debug: connection.set_trace_callback(print)
@@ -123,7 +127,7 @@ class Listing:
         UPDATE rentals SET LastIngestedOn = ? WHERE id = ?
         """, values)
         connection.commit()
-        print("LastIngestedIn updated successfully.")
+        logger.info("LastIngestedIn updated successfully.")
 
     def find_listing_by_locZip(self, locZip):
         cursor.execute("""
@@ -139,7 +143,7 @@ class Listing:
         WHERE vendor = ? AND LastIngestedOn < ?;
         """, values)
         connection.commit()
-        print("obsolete records updated.")
+        logger.info("obsolete records updated.")
 
     def load_listing(self, id_number):
         try:
@@ -185,12 +189,12 @@ class Listing:
     
     def update_zip(self, id_number, zip):
         values = int(zip), id_number
-        print(values)
+        logger.info(values)
         cursor.execute("""
             UPDATE rentals SET LocZip = ? WHERE id = ?;
         """, values)
         connection.commit()
-        print("Zip code updated successfully.")
+        logger.info("Zip code updated successfully.")
 
     def update_available(self):
         cursor.execute("""
@@ -201,7 +205,7 @@ class Listing:
         AND date(LastIngestedOn) < date('now', '-3 days');       
         """)
         connection.commit()
-        print("Availability updated, marking units that haven't been seen in a few days.")
+        logger.info("Availability updated, marking units that haven't been seen in a few days.")
     
     def update_days_on_market(self):
         cursor.execute("""
@@ -210,4 +214,4 @@ class Listing:
         WHERE CurrentlyAvailable = 'no';
         """)
         connection.commit()
-        print("Updated daysOnMarket.")
+        logger.info("Updated daysOnMarket.")
