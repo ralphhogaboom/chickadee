@@ -4,7 +4,11 @@
 import os
 import sqlite3
 from sqlite3 import Error
-from listing import Listing
+import sys
+import os
+libdir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, libdir)
+from class_listing import Listing
 
 db = "db/db.sqlite3"
 if os.path.exists(db):
