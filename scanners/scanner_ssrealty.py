@@ -9,6 +9,10 @@ import random
 from random import randint
 import os
 import sys
+import logger
+
+__file__ = 'scanner_ssrealty.py'
+
 libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, libdir)
 from class_listing import Listing
@@ -17,11 +21,9 @@ scanner_name = "ssrealty"
 vendor_name = "South Shore Realty"
 path = "https://www.graysharborrentals.com/home_rentals"
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-
-print("------------------------")
-print(scanner_name)
-print(vendor_name)
-print("------------------------")
+logger.info(scanner_name)
+logger.info(vendor_name)
+logger.info("------------------------")
 
 def assumeBedrooms(bedrooms):
     return 1 if int(bedrooms) == 0 else int(bedrooms)
@@ -112,31 +114,30 @@ for ra in ras:
     # 22 lease
     strLease = "0"
 
-    """ ## Begin Debug code
+    ## Begin Debug code
     #print(" 1 id: " + strid)
     #print(" 2 FirstIngestedOn: " + strFirstIngestedOn)
-    print(" 3 LastIngestedOn: " + strLastIngestedOn)
-    print(" 4 LocCity: " + strLocCity)
-    print(" 5 LocZip: " + strLocZip)
-    print(" 6 LocDesc: " + strLocDesc)
-    print(" 7 price: " + strPrice)
-    print(" 8 bedrooms: " + strBedrooms)
-    print(" 9 bathrooms: " + strBathrooms)
-    print("10 description: " + strDescription)
-    print("11 url: " + strUrl)
-    print("12 type: " + strType)
-    print("13 images: " + str(strImages))
-    print("14 FeaturedImage: " + strFeaturedImage)
-    print("15 PetFriendly: " + strPetFriendly)
-    print("16 furnished: " + strFurnished)
-    print("17 CurrentlyAvailable: " + strCurrentlyAvailable)
-    print("18 vendor: " + strVendor)
-    print("19 scanner: " + strScanner)
-    print("20 SquareFeet: " + strSquareFeet)
-    print("21 deposit: " + strDeposit)
-    print("22 lease: " + strLease)
-    print("-----------------------------")
-    """
+    logger.debug(" 3 LastIngestedOn: " + strLastIngestedOn)
+    logger.debug(" 4 LocCity: " + strLocCity)
+    logger.debug(" 5 LocZip: " + strLocZip)
+    logger.debug(" 6 LocDesc: " + strLocDesc)
+    logger.debug(" 7 price: " + strPrice)
+    logger.debug(" 8 bedrooms: " + strBedrooms)
+    logger.debug(" 9 bathrooms: " + strBathrooms)
+    logger.debug("10 description: " + strDescription)
+    logger.debug("11 url: " + strUrl)
+    logger.debug("12 type: " + strType)
+    logger.debug("13 images: " + str(strImages))
+    logger.debug("14 FeaturedImage: " + strFeaturedImage)
+    logger.debug("15 PetFriendly: " + strPetFriendly)
+    logger.debug("16 furnished: " + strFurnished)
+    logger.debug("17 CurrentlyAvailable: " + strCurrentlyAvailable)
+    logger.debug("18 vendor: " + strVendor)
+    logger.debug("19 scanner: " + strScanner)
+    logger.debug("20 SquareFeet: " + strSquareFeet)
+    logger.debug("21 deposit: " + strDeposit)
+    logger.debug("22 lease: " + strLease)
+    logger.debug("-----------------------------")
 
     # check if exists in db; 
     loc1 = Listing()
@@ -146,24 +147,24 @@ for ra in ras:
         loc1.exists = False
         loc1.load_listing(loc1.id_number)
         if loc1.exists:
-            print("Listing found.")
-            # print(loc1.locDesc)
-            # print(loc1.locCity)
-            # print(loc1.locZip)
-            # print(loc1.price)
-            print("Evaluating price update ...")
+            logger.info("Listing found.")
+            logger.debug(loc1.locDesc)
+            logger.debug(loc1.locCity)
+            logger.debug(loc1.locZip)
+            logger.debug(loc1.price)
+            logger.info("Evaluating price update ...")
             if loc1.price != int(strPrice):
                 loc1.set_listing_price(int(strPrice))
-                print("Price should have been updated.")
-            print("Evaluating square feet update ...")
+                logger.info("Price should have been updated.")
+            logger.info("Evaluating square feet update ...")
             if loc1.squareFeet != int(strSquareFeet):
                 loc1.set_square_feet(int(strSquareFeet))
             loc1.set_currently_available()
             loc1.set_last_ingested(strLastIngestedOn)
     else: 
-        print("New listing found, adding to database ...")
+        logger.info("New listing found, adding to database ...")
         loc1.new_listing(strLastIngestedOn, strLastIngestedOn, strLocZip, strLocCity, strLocDesc, strPrice, strBedrooms, strBathrooms, strDescription, strUrl, strType, 0, strFeaturedImage, 0, 0, "yes", strVendor, strScanner, strSquareFeet, 0, 0)
 
-    print("----------------------------")
+    logger.info("----------------------------")
 
 browser.quit()

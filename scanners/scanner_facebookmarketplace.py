@@ -9,6 +9,10 @@ import sys
 from splinter import Browser
 import os
 import sys
+import logger
+
+__file__ = 'scanner_facebookmarketplace.py'
+
 libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, libdir)
 from class_listing import Listing
@@ -38,11 +42,9 @@ parentBrowser = Browser('firefox')
 base_url = "https://www.facebook.com/marketplace/114113988602319/propertyrentals/?"
 scanner_name = "facebook"
 vendor_name = "Facebook Marketplace"
-
-print("------------------------")
-print(scanner_name)
-print(vendor_name)
-print("------------------------")
+logger.info(scanner_name)
+logger.info(vendor_name)
+logger.info("------------------------")
 
 lat = (round(random.uniform(46.834,47.0541),4))
 long = (round(random.uniform(-124.1017,-123.6774),4))
@@ -104,20 +106,20 @@ for url in urls:
         strLocDesc = "0"
         snippet = listing_soup.find("span", class_="x193iq5w xeuugli x13faqbe x1vvkbs x1xmvt09 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x14z4hjw x3x7a5m xngnso2 x1qb5hxa x1xlr1w8 xzsf02u")
         strLocDesc = snippet.text
-        print("strLocDesc: " + strLocDesc)
+        logger.debug("strLocDesc: " + strLocDesc)
         # 5 LocCity
         snippet = listing_soup.find("span", class_="x193iq5w xeuugli x13faqbe x1vvkbs x1xmvt09 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x xudqn12 x3x7a5m x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h")
         for chunk in snippet:
             if "," in chunk.text:
                 strLocCity = chunk.text
                 strLocCity = strLocCity.split(',')
-                print("strLocCity: ")
-                print(strLocCity)
+                logger.debug("strLocCity: ")
+                logger.debug(strLocCity)
                 strLocCity = strLocCity[-2] + ", " + strLocCity[-1]
                 strLocCity = strLocCity.lstrip()
                 strLocCity = strLocCity.rstrip()
-                print("strLocCity: ")
-                print(strLocCity)
+                logger.debug("strLocCity: ")
+                logger.debug(strLocCity)
         # 7 Price
         strPrice = listing_soup.find("span", class_="x193iq5w xeuugli x13faqbe x1vvkbs x1xmvt09 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x xudqn12 x676frb x1lkfr7t x1lbecb7 x1s688f xzsf02u")
         strPrice = numbersOnly(strPrice.text)
@@ -179,35 +181,60 @@ for url in urls:
             if "lease" in (chunk.text).lower():
                 strLease = chunk.text
 
+        ## Begin Debug code
+        #print(" 1 id: " + strid)
+        #print(" 2 FirstIngestedOn: " + strFirstIngestedOn)
+        logger.debug(" 3 LastIngestedOn: " + strLastIngestedOn)
+        logger.debug(" 4 LocCity: " + strLocCity)
+        logger.debug(" 5 LocZip: " + strLocZip)
+        logger.debug(" 6 LocDesc: " + strLocDesc)
+        logger.debug(" 7 price: " + strPrice)
+        logger.debug(" 8 bedrooms: " + strBedrooms)
+        logger.debug(" 9 bathrooms: " + strBathrooms)
+        logger.debug("10 description: " + strDescription)
+        logger.debug("11 url: " + strUrl)
+        logger.debug("12 type: " + strType)
+        logger.debug("13 images: " + str(strImages))
+        logger.debug("14 FeaturedImage: " + strFeaturedImage)
+        logger.debug("15 PetFriendly: " + strPetFriendly)
+        logger.debug("16 furnished: " + strFurnished)
+        logger.debug("17 CurrentlyAvailable: " + strCurrentlyAvailable)
+        logger.debug("18 vendor: " + strVendor)
+        logger.debug("19 scanner: " + strScanner)
+        logger.debug("20 SquareFeet: " + strSquareFeet)
+        logger.debug("21 deposit: " + strDeposit)
+        logger.debug("22 lease: " + strLease)
+        logger.debug("-----------------------------")
+
         # check if exists in db; 
         listing = Listing()
-        print(strUrl)
+        logger.debug(strUrl)
         listing.find_listing_by_url(str(strUrl))
         if listing.exists:
             listing.id_number = listing.id_number[0]
             listing.exists = False
             listing.load_listing(listing.id_number)
             if listing.exists:
-                print("Listing found.")
-                print("Evaluating price update ...")
+                logger.info("Listing found.")
+                logger.info("Evaluating price update ...")
                 if listing.price != int(strPrice):
                     listing.set_listing_price(int(strPrice))
-                    print("Price should have been updated.")
-                print("Evaluating square feet update ...")
+                    logger.info("Price should have been updated.")
+                logger.info("Evaluating square feet update ...")
                 if listing.squareFeet != int(strSquareFeet):
                     listing.set_square_feet(int(strSquareFeet))
                 listing.set_currently_available()
                 listing.set_last_ingested(strLastIngestedOn)
         else: 
-            print("New listing found, adding to database ...")
+            logger.info("New listing found, adding to database ...")
             listing.new_listing(strLastIngestedOn, strLastIngestedOn, strLocZip, strLocCity, strLocDesc, strPrice, strBedrooms, strBathrooms, strDescription, strUrl, strType, 0, strFeaturedImage, 0, 0, "yes", strVendor, strScanner, strSquareFeet, 0, 0)
 
-        print("----------------------------")
+        logger.info("----------------------------")
         browser.quit()
     except:
         browser.quit()
         pass
-print("Total listings found: " + str(i))
+logging.info("Total listings found: " + str(i))
 
 parentBrowser.quit()
 
