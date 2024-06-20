@@ -1,8 +1,7 @@
 import sys
 import os
-import logging
 
-__file__ = 'run_maintenance.py'
+debug = True
 
 libdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, libdir)
@@ -61,11 +60,11 @@ for row in listing.results:
     if "south bend" in thisZip:
         listing.update_zip(row[0], "98586")
 
-logger.info("Now running updates on availability.")
+if debug: print("[maintenance] ", "Now running updates on availability.")
 
 listing.update_available()
 
-logger.info("Availability update completed.")
+if debug: print("[maintenance] ", "Availability update completed.")
 
 listing.update_days_on_market()
 
